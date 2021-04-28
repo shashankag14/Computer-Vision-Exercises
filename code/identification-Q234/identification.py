@@ -92,36 +92,36 @@ for imgidx1 in range(len(image_files1)):
         img2_gray = rgb2gray(img2_color.astype('double'))
         img2_color = img2_color.astype('double')
 
-    D = np.zeros( (len(distance_types), len(hist_types)) )
+        D = np.zeros( (len(distance_types), len(hist_types)) )
 
-    for didx in range(len(distance_types)):
+        for didx in range(len(distance_types)):
 
-        for hidx in range(len(hist_types)):
-   
-            if histogram_module.is_grayvalue_hist(hist_types[hidx]):
-                hist1 = histogram_module.get_hist_by_name(img1_gray, num_bins_gray, hist_types[hidx])
-                hist2 = histogram_module.get_hist_by_name(img2_gray, num_bins_gray, hist_types[hidx])
+            for hidx in range(len(hist_types)):
 
-                if len(hist1) == 2 and len(hist1[0]) > 1:
-                    hist1 = hist1[0]
-                if len(hist2) == 2 and len(hist2[0]) > 1:
-                    hist2 = hist2[0]
+                if histogram_module.is_grayvalue_hist(hist_types[hidx]):
+                    hist1 = histogram_module.get_hist_by_name(img1_gray, num_bins_gray, hist_types[hidx])
+                    hist2 = histogram_module.get_hist_by_name(img2_gray, num_bins_gray, hist_types[hidx])
 
-                D[didx, hidx] = dist_module.get_dist_by_name(hist1, hist2, distance_types[didx])
-            else:
-                hist1 = histogram_module.get_hist_by_name(img1_color, num_bins_color, hist_types[hidx])
-                hist2 = histogram_module.get_hist_by_name(img2_color, num_bins_color, hist_types[hidx])
+                    if len(hist1) == 2 and len(hist1[0]) > 1:
+                        hist1 = hist1[0]
+                    if len(hist2) == 2 and len(hist2[0]) > 1:
+                        hist2 = hist2[0]
 
-                if len(hist1) == 2 and len(hist1[0]) > 1:
-                    hist1 = hist1[0]
-                if len(hist2) == 2 and len(hist2[0]) > 1:
-                    hist2 = hist2[0]
+                    D[didx, hidx] = dist_module.get_dist_by_name(hist1, hist2, distance_types[didx])
+                else:
+                    hist1 = histogram_module.get_hist_by_name(img1_color, num_bins_color, hist_types[hidx])
+                    hist2 = histogram_module.get_hist_by_name(img2_color, num_bins_color, hist_types[hidx])
 
-                D[didx, hidx] = dist_module.get_dist_by_name(hist1, hist2, distance_types[didx])
+                    if len(hist1) == 2 and len(hist1[0]) > 1:
+                        hist1 = hist1[0]
+                    if len(hist2) == 2 and len(hist2[0]) > 1:
+                        hist2 = hist2[0]
 
-    print('compare image "%s" to "%s":'% (image_files1[imgidx1], image_files2[imgidx2]))
-    print(D)
-    print('\n')
+                    D[didx, hidx] = dist_module.get_dist_by_name(hist1, hist2, distance_types[didx])
+
+        print('compare image "%s" to "%s":'% (image_files1[imgidx1], image_files2[imgidx2]))
+        print(D)
+        print('\n')
 
 
 
@@ -156,6 +156,28 @@ num_correct = sum( best_match == range(len(query_images)) )
 print('number of correct matches: %d (%f)\n'% (num_correct, 1.0 * num_correct / len(query_images)))
 
 
+# Experiment for checking Recoginition rate for different combination of histogram, distance functions and number of bins
+def experiment(key = False):
+    if (key == True):
+        print('PART 3C : Experiments for various combinations of bins and functions')
+        eval_dist_type = ['chi2','l2','intersect']
+        eval_hist_type = ['rg','rgb','dxdy']
+        eval_num_bins = [10,20,30,40,50]
+        for i in eval_num_bins:
+            print('\nNumber of bins:{}'.format(i))
+            print('Number of correct matches :')
+            for j in eval_dist_type:
+                for k in eval_hist_type:
+                    [best_match, D] = match_module.find_best_match(model_images, query_images, j, k, i)
+                    num_correct = sum( best_match == range(len(query_images)) )
+                    print('dist-{}, hist-{}: {} ({})'.format(j,k,num_correct,1.0 * num_correct / len(query_images)))
+    else:
+        pass
+
+# Pass key = TRUE to check recoginition rate for different combinations.
+# It will be very slow !
+experiment(key = False)
+
 ## plot recall_precision curves (Question 4)
 print("PART 4 :")
 with open('model.txt') as fp:
@@ -166,7 +188,7 @@ with open('query.txt') as fp:
     query_images = fp.readlines()
 query_images = [x.strip() for x in query_images] 
 
-eval_num_bins = [10,20,40,50];
+eval_num_bins = [10,20,30,40,50];
 for i in (eval_num_bins):
     print("num_bins:", i)
     plt.figure()
