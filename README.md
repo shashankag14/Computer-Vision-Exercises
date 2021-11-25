@@ -1,6 +1,6 @@
 # Computer-Vision-Exercises
 
-Exercises on High Level Computer Vision course as a part of master's degree program at Universität des Saarlandes, Germany. 
+Exercises on High Level Computer Vision course as a part of master's degree program at Universität des Saarlandes, Germany. This course is mapped to the Stanford University's lecture series - CS231n.
 
 ## Exercise 1 
 It is based on familiarisation with basic image filtering routines. In the second part, a simple image querying system has been developed which accepts a query image as input and then finds a set of similar images in the database. In order to compare image some simple histogram based distance functions has been developed and evaluated their performance in combination with different image representations.
